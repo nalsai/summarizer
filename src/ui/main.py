@@ -4,7 +4,8 @@
 
 import sys
 import gi
-from widgets import Window, MenuButton
+#from summarizer.ui.widgets import Window, MenuButton   # for build
+from widgets import Window, MenuButton                  # for development
 from gi.repository import Gtk
 
 gi.require_version("Gtk", "4.0")  # GTK 4 ftw
@@ -109,9 +110,7 @@ class MyWindow(Window):
 
     def show_preferences(self):
         # TODO
-        builder = Gtk.Builder.new_from_file('src/ui/preferences.ui')
-        preferences = builder.get_object('preferences')
-        preferences.present()
+        pass
 
     def show_about(self):
         about = Gtk.AboutDialog()

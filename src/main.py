@@ -4,7 +4,8 @@
 
 import argparse
 import sys
-import text_summarize
+#import summarizer.text_summarize   # for build
+import text_summarize               # for development
 
 
 def parse_command_line():
@@ -25,9 +26,12 @@ def parse_command_line():
     return input_file, output_file, sentences_number
 
 
-if __name__ == "__main__":
+def main():
+    """main"""
     try:
         input_f, output_f, sentences_n = parse_command_line()
+
+        text_input = ""
 
         if input_f == "-":
             text_input = sys.stdin.read()
@@ -52,3 +56,7 @@ if __name__ == "__main__":
                 file.write(summarized_text)
         else:
             print(summarized_text)
+
+
+if __name__ == '__main__':
+    main()
