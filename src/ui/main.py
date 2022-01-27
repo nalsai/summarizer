@@ -57,6 +57,7 @@ class MyWindow(Window):
         save_btn.set_tooltip_text("Save to File")
         save_btn.set_has_frame(False)
         save_btn.set_icon_name("document-save-symbolic")
+        save_btn.connect('clicked', self.on_save_btn)
         self.headerbar.pack_end(save_btn)
 
         load_btn = Gtk.Button()
@@ -64,17 +65,19 @@ class MyWindow(Window):
         load_btn.set_tooltip_text("Load from File")
         load_btn.set_has_frame(False)
         load_btn.set_icon_name("document-open-symbolic")
+        load_btn.connect('clicked', self.on_load_btn)
         self.headerbar.pack_end(load_btn)
 
         # Create actions to handle menu actions
         self.create_action('clear', self.menu_handler)
-        self.create_action('preferences', self.menu_handler)
+        #self.create_action('preferences', self.menu_handler)
         self.create_action('shortcuts', self.menu_handler)
         self.create_action('about', self.menu_handler)
 
         apply_btn = Gtk.Button()
         apply_btn.set_label("Summarize")
         apply_btn.set_halign(Gtk.Align.END)
+        apply_btn.connect('clicked', self.on_summarize_btn)
         self.headerbar.pack_start(apply_btn)
 
         main = self.setup_main_page()
@@ -83,12 +86,14 @@ class MyWindow(Window):
     def setup_main_page(self):
         """Main Page"""
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        scroll_view = Gtk.ScrolledWindow()
-        text = Gtk.TextView.new()
-        text.set_vexpand(True)
-        text.set_hexpand(True)
-        text.set_wrap_mode(Gtk.WrapMode.WORD)
-        txt = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' \
+        scrolledwindow = Gtk.ScrolledWindow()
+        self.textview = Gtk.TextView.new()
+        self.textview.set_vexpand(True)
+        self.textview.set_hexpand(True)
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.textbuffer = self.textview.get_buffer()
+        self.textbuffer.set_text(
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' \
             'Donec tempus leo at interdum iaculis. ' \
             'Cras a dolor ut augue blandit varius. Aliquam ac fermentum turpis. ' \
             'Duis nisl ante, faucibus eget magna eget, interdum pretium orci. ' \
@@ -98,9 +103,9 @@ class MyWindow(Window):
             'Nullam nunc libero, aliquet id arcu in, tincidunt molestie magna. ' \
             'Maecenas porttitor, justo eget maximus consequat, ' \
             'velit nisl dictum mauris, et tristique ante justo eget mauris. '
-        text.get_buffer().set_text(txt)
-        scroll_view.set_child(text)
-        main.append(scroll_view)
+        )
+        scrolledwindow.set_child(self.textview)
+        main.append(scrolledwindow)
         return main
 
     def show_shortcuts(self):
@@ -110,7 +115,7 @@ class MyWindow(Window):
 
     def show_preferences(self):
         # TODO
-        pass
+        print("まだ")
 
     def show_about(self):
         about = Gtk.AboutDialog()
@@ -134,16 +139,54 @@ class MyWindow(Window):
         if name == 'shortcuts':
             self.show_shortcuts()
         elif name == 'clear':
-            # TODO
-            pass
+            self.textview.get_buffer().set_text("")
         elif name == 'preferences':
             self.show_preferences()
         elif name == 'about':
             self.show_about()
 
-    def on_button_clicked(self, widget):
-        """ callback for buttom clicked """
-        pass
+    def on_load_btn(self, widget):
+        """ callback for load buttom clicked """
+        dialog = Gtk.FileChooserDialog()
+        dialog.set_action(Gtk.FileChooserAction.OPEN)
+        dialog.set_title("Load from File")
+        dialog.add_button("_Select", Gtk.ResponseType.OK)
+        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        dialog.set_transient_for(self)
+        dialog.set_modal(self)
+        dialog.connect('response', self.on_save_response)
+        dialog.present()
+
+    def on_load_response(self, dialog, response):
+        """ callback for load response from FileChooserDialog """
+        if response == Gtk.ResponseType.OK:
+            file = dialog.get_file()
+            print(file)  # TODO: save
+        dialog.destroy()
+
+    def on_save_btn(self, widget):
+        """ callback for save buttom clicked """
+        dialog = Gtk.FileChooserDialog()
+        dialog.set_action(Gtk.FileChooserAction.SAVE)
+        dialog.set_title("Save to File")
+        dialog.add_button("_Save", Gtk.ResponseType.OK)
+        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
+        dialog.set_transient_for(self)
+        dialog.set_modal(self)
+        dialog.connect('response', self.on_load_response)
+        dialog.present()
+
+    def on_save_response(self, dialog, response):
+        """ callback for save response from FileChooserDialog """
+        if response == Gtk.ResponseType.OK:
+            file = dialog.get_file()
+            print(file)  # TODO: load
+        dialog.destroy()
+
+    def on_summarize_btn(self, widget):
+        """ callback for summarize buttom clicked """
+        # TODO
+        print(self.textbuffer.get_text(self.textbuffer.get_start_iter(),self.textbuffer.get_end_iter(),False))
 
 
 class Application(Gtk.Application):
