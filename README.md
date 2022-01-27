@@ -25,13 +25,39 @@ echo -e "first line\nsecond line" | ./src/main.py -i - # summarize from piped co
 
 Python3  
 Gtk4  
-PyGObject  
-meson (only for building)
+PyGObject
 
 ## Installing PyGObject
 
 https://pygobject.readthedocs.io/en/latest/getting_started.html        
 
+
+# Building Flatpak
+
+### Install SDK and Platform
+
+```bash
+flatpak install flathub org.Gnome.Sdk//41
+flatpak install flathub org.Gnome.Platform//41
+```
+
+### Build and install for user
+
+```bash
+flatpak-builder --user --install --force-clean build-dir de.haigruppe.summarizer.yml
+```
+
+### Build to repo
+
+```bash
+flatpak-builder --repo=repo --force-clean build-dir de.haigruppe.summarizer.yml
+```
+
+### Make single-file bundle from repo
+
+```bash
+flatpak build-bundle repo summarizer.flatpak de.haigruppe.summarizer stable --runtime-repo="https://flathub.org/repo/flathub.flatpakrepo"
+```
 
 # Ressources
 
