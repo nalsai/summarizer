@@ -6,12 +6,15 @@ import argparse
 import sys
 import text_summarize
 
+
 def parse_command_line():
     """Function to parse user input."""
-    parser = argparse.ArgumentParser(description="""A program to summarize text.
-    Please provide an input file or text.""")
-    parser.add_argument("-i", "--input", help="path of input text file (use - to read from stdin)")
-    parser.add_argument("-o", "--output", help="path of output text file (prints to stdout if not specified)")
+    parser = argparse.ArgumentParser(
+        description="A program to summarize text. Please provide an input file or text.")
+    parser.add_argument(
+        "-i", "--input", help="path of input text file (use - to read from stdin)")
+    parser.add_argument(
+        "-o", "--output", help="path of output text file (prints to stdout if not specified)")
     parser.add_argument("-n", "--number", help="number of sentences")
 
     args = parser.parse_args()
@@ -20,6 +23,7 @@ def parse_command_line():
     output_file = args.output
     sentences_number = args.number
     return input_file, output_file, sentences_number
+
 
 if __name__ == "__main__":
     try:
