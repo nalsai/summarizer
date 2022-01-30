@@ -6,9 +6,11 @@ import sys
 import gi
 #from summarizer.ui.widgets import Window, MenuButton   # for build
 from widgets import Window, MenuButton                  # for development
-from gi.repository import Gtk
 
 gi.require_version("Gtk", "4.0")  # GTK 4 ftw
+gi.require_version("Adw", version="1")
+
+from gi.repository import Gtk, Adw
 
 
 # Gtk.Builder xml for the application menu
@@ -77,6 +79,7 @@ class MyWindow(Window):
         apply_btn = Gtk.Button()
         apply_btn.set_label("Summarize")
         apply_btn.set_halign(Gtk.Align.END)
+        apply_btn.set_css_classes(["suggested-action"])
         apply_btn.connect('clicked', self.on_summarize_btn)
         self.headerbar.pack_start(apply_btn)
 

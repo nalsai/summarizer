@@ -25,7 +25,8 @@ echo -e "first line\nsecond line" | ./src/main.py -i - # summarize from piped co
 
 Python3  
 Gtk4  
-PyGObject
+PyGObject  
+libadwaita
 
 ## Installing PyGObject
 
