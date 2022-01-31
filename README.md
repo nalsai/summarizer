@@ -27,7 +27,8 @@ Python3
 Gtk4  
 PyGObject  
 libadwaita  
-meson
+nltk  
+flatpak-builder or meson (for building)
 
 ## Installing PyGObject
 

@@ -24,7 +24,7 @@ def parse_command_line():
 
     input_file = args.input
     output_file = args.output
-    sentences_number = args.number
+    sentences_number = int(args.number)
     return input_file, output_file, sentences_number
 
 
@@ -37,11 +37,9 @@ def main():
 
         if input_f == "-":
             text_input = sys.stdin.read()
-            print(text_input)
         else:
             with open(input_f, "r") as file:
                 text_input = file.read()
-                print(text_input)
 
     except FileNotFoundError:
         print("An error occured.")
