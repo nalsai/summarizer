@@ -3,14 +3,17 @@
 """A UI for a program to summarize text, I guess."""
 
 import sys
+import os
 import gi
-#from summarizer.ui.widgets import Window, MenuButton   # for build
-from widgets import Window, MenuButton                  # for development
+try:
+    from summarizer.widgets import Window, MenuButton
+except ImportError:
+    from widgets import Window, MenuButton
 
 gi.require_version("Gtk", "4.0")  # GTK 4 ftw
 gi.require_version("Adw", version="1")
 
-from gi.repository import Gtk, Adw
+from gi.repository import Gtk, Gio, Adw
 
 
 # Gtk.Builder xml for the application menu
@@ -72,7 +75,7 @@ class MyWindow(Window):
 
         # Create actions to handle menu actions
         self.create_action('clear', self.menu_handler)
-        #self.create_action('preferences', self.menu_handler)
+        self.create_action('preferences', self.menu_handler)
         self.create_action('shortcuts', self.menu_handler)
         self.create_action('about', self.menu_handler)
 
@@ -91,6 +94,10 @@ class MyWindow(Window):
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         scrolledwindow = Gtk.ScrolledWindow()
         self.textview = Gtk.TextView.new()
+        self.textview.set_left_margin(8)
+        self.textview.set_top_margin(8)
+        self.textview.set_right_margin(8)
+        self.textview.set_bottom_margin(8)
         self.textview.set_vexpand(True)
         self.textview.set_hexpand(True)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -112,8 +119,11 @@ class MyWindow(Window):
         return main
 
     def show_shortcuts(self):
-        builder = Gtk.Builder.new_from_file('src/ui/shortcuts.ui')
-        shortcuts = builder.get_object('shortcuts')
+        if(os.path.exists("data/resources/ui/shortcuts.ui")):
+            builder = Gtk.Builder.new_from_file("data/resources/ui/shortcuts.ui")
+        else:
+            builder = Gtk.Builder.new_from_resource("/de/haigruppe/summarizer/ui/shortcuts.ui")
+        shortcuts = builder.get_object("shortcuts")
         shortcuts.present()
 
     def show_preferences(self):
@@ -151,9 +161,13 @@ class MyWindow(Window):
     def on_load_btn(self, widget):
         """ callback for load buttom clicked """
         dialog = Gtk.FileChooserDialog()
+        f = Gtk.FileFilter()
+        f.set_name("Text files")
+        f.add_mime_type("text/plain")
+        dialog.add_filter(f)
         dialog.set_action(Gtk.FileChooserAction.OPEN)
         dialog.set_title("Load from File")
-        dialog.add_button("_Select", Gtk.ResponseType.OK)
+        dialog.add_button("_Select", Gtk.ResponseType.ACCEPT)
         dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         dialog.set_transient_for(self)
         dialog.set_modal(self)
@@ -162,17 +176,22 @@ class MyWindow(Window):
 
     def on_load_response(self, dialog, response):
         """ callback for load response from FileChooserDialog """
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            print(file)  # TODO: save
+            filename = file.get_path()
+            print(filename)  # TODO: save
         dialog.destroy()
 
     def on_save_btn(self, widget):
         """ callback for save buttom clicked """
         dialog = Gtk.FileChooserDialog()
+        f = Gtk.FileFilter()
+        f.set_name("Text file")
+        f.add_mime_type("text/plain")
+        dialog.add_filter(f)
         dialog.set_action(Gtk.FileChooserAction.SAVE)
         dialog.set_title("Save to File")
-        dialog.add_button("_Save", Gtk.ResponseType.OK)
+        dialog.add_button("_Save", Gtk.ResponseType.ACCEPT)
         dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         dialog.set_transient_for(self)
         dialog.set_modal(self)
@@ -181,9 +200,10 @@ class MyWindow(Window):
 
     def on_save_response(self, dialog, response):
         """ callback for save response from FileChooserDialog """
-        if response == Gtk.ResponseType.OK:
+        if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            print(file)  # TODO: load
+            filename = file.get_path()
+            print(filename)  # TODO: load
         dialog.destroy()
 
     def on_summarize_btn(self, widget):
@@ -192,11 +212,17 @@ class MyWindow(Window):
         print(self.textbuffer.get_text(self.textbuffer.get_start_iter(),self.textbuffer.get_end_iter(),False))
 
 
-class Application(Gtk.Application):
+class Application(Adw.Application):
     """ Main Aplication class """
 
     def __init__(self):
-        super().__init__(application_id='de.haigruppe.summarizer')
+        super().__init__(application_id='de.haigruppe.summarizer', flags=Gio.ApplicationFlags.FLAGS_NONE)
+
+    def do_startup(self):
+        Adw.Application.do_startup(self)
+        style_manager = Adw.StyleManager.get_default()
+        style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK  # Use dark appearance unless the system prefers prefers light colors.
+                                                                        # should probably be removed with Gnome 42 Runtime
 
     def do_activate(self):
         win = self.props.active_window

@@ -1,0 +1,73 @@
+{
+  "app-id": "de.haigruppe.summarizer",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "41",
+  "sdk": "org.gnome.Sdk",
+  "command": "summarizer",
+  "branch": "stable",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri"
+  ],
+  "cleanup": [
+    "/include",
+    "/lib/*.a",
+    "/lib/*.la",
+    "/lib/pkgconfig",
+    "/share/man",
+    "/share/doc"
+  ],
+  "modules": [
+    {
+      "name": "libadwaita",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-Dexamples=false",
+        "-Dtests=false"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://gitlab.gnome.org/GNOME/libadwaita.git",
+          "commit": "12a10b320300ec32d480c29f26ae55c1d4b2a8b7"
+        }
+      ],
+      "modules": [
+        {
+          "name": "libsass",
+          "buildsystem": "meson",
+          "sources": [
+            {
+              "type": "git",
+              "url": "https://github.com/lazka/libsass.git",
+              "branch": "meson"
+            }
+          ]
+        },
+        {
+          "name": "sassc",
+          "buildsystem": "meson",
+          "sources": [
+            {
+              "type": "git",
+              "url": "https://github.com/lazka/sassc.git",
+              "branch": "meson"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "summarizer",
+      "buildsystem": "meson",
+      "sources": [
+        {
+          "type": "dir",
+          "path": "."
+        }
+      ]
+    }
+  ]
+}

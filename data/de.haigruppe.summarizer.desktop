@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=🦈 Summarizer
+Icon=de.haigruppe.summarizer
+Exec=summarizer
+Categories=Text;

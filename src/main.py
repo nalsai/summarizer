@@ -4,8 +4,10 @@
 
 import argparse
 import sys
-#import summarizer.text_summarize   # for build
-import text_summarize               # for development
+try:
+    import summarizer.text_summarize
+except ImportError:
+    import text_summarize
 
 
 def parse_command_line():
