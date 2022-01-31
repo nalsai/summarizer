@@ -1,6 +1,6 @@
 app-id: de.haigruppe.summarizer
 runtime: org.gnome.Platform
-runtime-version: '41'
+runtime-version: '41' # libadwaita should be included in future versions, for now we need to build it ourselves
 sdk: org.gnome.Sdk
 command: summarizer-ui
 branch: stable
@@ -8,17 +8,45 @@ finish-args:
   - --share=ipc
   - --socket=fallback-x11
   - --socket=wayland
-#  - --socket=pulseaudio
   - --device=dri
-#  - --share=network
+cleanup:
+  - /include
+  - /lib/*.a
+  - /lib/*.la
+  - /lib/pkgconfig
+  - /share/man
+  - /share/doc
 modules:
+  - name: libadwaita
+    buildsystem: meson
+    config-opts:
+    - -Dexamples=false
+    - -Dtests=false
+    sources:
+    - type: git
+      url: https://gitlab.gnome.org/GNOME/libadwaita.git
+      commit: 12a10b320300ec32d480c29f26ae55c1d4b2a8b7 # any later commit requires GTK 4.5.0
+    modules:
+    - name: libsass
+      buildsystem: meson
+      sources:
+      - type: git
+        url: https://github.com/lazka/libsass.git
+        branch: meson
+    - name: sassc
+      buildsystem: meson
+      sources:
+      - type: git
+        url: https://github.com/lazka/sassc.git
+        branch: meson
+
   - name: summarizer
     buildsystem: simple
     build-commands:
-      - pip3 install --prefix=/app --no-deps .
-      - sed -i "s/sys.exit(main())/sys.exit(main.main())/g" /app/bin/summarizer-ui
-      - sed -i "s/sys.exit(main())/sys.exit(main.main())/g" /app/bin/summarizer-cli
+    - pip3 install --prefix=/app --no-deps .
+    - sed -i "s/sys.exit(main())/sys.exit(main.main())/g" /app/bin/summarizer-ui
+    - sed -i "s/sys.exit(main())/sys.exit(main.main())/g" /app/bin/summarizer-cli
     sources:
-      - type: git
-        path: .
-        branch: main
+    - type: git
+      path: .
+      branch: main
