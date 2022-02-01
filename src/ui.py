@@ -7,8 +7,10 @@ import os
 import gi
 try:
     from summarizer.widgets import Window, MenuButton
+    import summarizer.text_summarize
 except ImportError:
     from widgets import Window, MenuButton
+    import text_summarize
 
 gi.require_version("Gtk", "4.0")  # GTK 4 ftw
 gi.require_version("Adw", version="1")
@@ -178,8 +180,9 @@ class MyWindow(Window):
         """ callback for load response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            filename = file.get_path()
-            print(filename)  # TODO: save
+            input_text = self.textbuffer.get_text(self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
+            with open(file.get_path(), "w") as file:
+                text_input = file.write(input_text)
         dialog.destroy()
 
     def on_save_btn(self, widget):
@@ -202,14 +205,15 @@ class MyWindow(Window):
         """ callback for save response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            filename = file.get_path()
-            print(filename)  # TODO: load
+            with open(file.get_path(), "r") as file:
+                text_input = file.read()
+                self.textbuffer.set_text(text_input)
         dialog.destroy()
 
     def on_summarize_btn(self, widget):
         """ callback for summarize buttom clicked """
-        # TODO
-        print(self.textbuffer.get_text(self.textbuffer.get_start_iter(),self.textbuffer.get_end_iter(),False))
+        input_text = self.textbuffer.get_text(self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
+        self.textbuffer.set_text(text_summarize.do_stuff(input_text, 2))
 
 
 class Application(Adw.Application):
