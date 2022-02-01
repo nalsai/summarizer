@@ -213,7 +213,7 @@ class MyWindow(Window):
     def on_summarize_btn(self, widget):
         """ callback for summarize buttom clicked """
         input_text = self.textbuffer.get_text(self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
-        self.textbuffer.set_text(text_summarize.do_stuff(input_text, 2))
+        self.textbuffer.set_text(text_summarize.do_stuff(input_text))
 
 
 class Application(Adw.Application):

@@ -10,7 +10,7 @@ import nltk
 use_nltk_tokenization = True    # non nltk sentencization doesn't work yet
 
 
-def do_stuff(input_text, number_of_sentences):
+def do_stuff(input_text, number_of_sentences=-1):
     """Does stuff, but not good yet"""
     # TODO: use a class and make this the __init__
 
@@ -27,6 +27,9 @@ def do_stuff(input_text, number_of_sentences):
             value += freq_dist[token]
         sentence_value = value / len(tokens)
         sentence_value_dict[sentence] = sentence_value
+
+    if number_of_sentences < 1:
+        number_of_sentences = round(len(sentence_list)/3)+1
 
     print(sentence_value_dict)
     # TODO: using a dictionary and sorting it changes the sentence order. This should not happen, or should it?
