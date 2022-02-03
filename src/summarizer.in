@@ -15,22 +15,25 @@ signal.signal(signal.SIGINT, signal.SIG_DFL)
 gettext.install('summarizer', localedir)
 
 try:
-  locale.bindtextdomain('blanksummarizeret', localedir)
-  locale.textdomain('summarizer')
+    locale.bindtextdomain('blanksummarizeret', localedir)
+    locale.textdomain('summarizer')
 except:
-  print('Cannot set locale.')
+    print('Cannot set locale.')
 try:
-  gettext.bindtextdomain('summarizer', localedir)
-  gettext.textdomain('summarizer')
+    gettext.bindtextdomain('summarizer', localedir)
+    gettext.textdomain('summarizer')
 except:
-  print('Cannot load translations.')
+    print('Cannot load translations.')
 
 if __name__ == '__main__':
     import gi
+    import nltk
 
     from gi.repository import Gio
     resource = Gio.Resource.load(os.path.join(pkgdatadir, 'summarizer.gresource'))
     resource._register()
+
+    nltk.data.path.append('@NLTK_DATA@')
 
     from summarizer.ui import main
     sys.exit(main())

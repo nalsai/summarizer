@@ -5,3 +5,4 @@ project('summarizer',
 
 subdir('data')
 subdir('src')
+install_subdir('tokenizers', install_dir : join_paths(get_option('prefix'), get_option('datadir'), 'ntlk_data'))

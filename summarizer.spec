@@ -4,8 +4,7 @@ Release:        1%{?dist}
 Summary:        A program to summarize text, I guess.
 
 License:        GPLv3+
-URL:            https://github.com/rafaelmardojai/blanket
-#Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+URL:            https://gitlab.cl.uni-heidelberg.de/prog1-ws21/prog1-ws21-summarizer6
 
 Requires:       glib2
 Requires:       gtk4
@@ -30,7 +29,6 @@ A program to summarize text, I guess.
 %meson_build
 
 
-
 %install
 %meson_install
 
@@ -48,4 +46,3 @@ A program to summarize text, I guess.
 #%{_datadir}/metainfo/com.rafaelmardojai.Blanket.metainfo.xml
 
 %changelog
-

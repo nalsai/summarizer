@@ -5,9 +5,9 @@
 import argparse
 import sys
 try:
-    import summarizer.text_summarize
+    from summarizer.text_summarize import do_stuff
 except ImportError:
-    import text_summarize
+    from text_summarize import do_stuff
 
 
 def parse_command_line():
@@ -50,7 +50,7 @@ def main():
         print("Check -h or --help for options.")
 
     if text_input:
-        summarized_text = text_summarize.do_stuff(text_input, sentences_n)
+        summarized_text = do_stuff(text_input, sentences_n)
         if output_f:
             with open(output_f, "w") as file:
                 file.write(summarized_text)

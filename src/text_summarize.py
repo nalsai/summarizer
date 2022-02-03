@@ -1,18 +1,10 @@
-#!/usr/bin/env python3
+"""summarizes a text, maybe"""
 
-"""idk"""
-# TODO: the data should be shipped with the app if possible
-# nltk.download('punkt')
-
-import re
 import nltk
-
-use_nltk_tokenization = True    # non nltk sentencization doesn't work yet
-
 
 def do_stuff(input_text, number_of_sentences=-1):
     """Does stuff, but not good yet"""
-    # TODO: use a class and make this the __init__
+    # TODO: use a class
 
     remove_list = ["a", ".", ","]     # TODO: file with more data
     cleaned_text = clean(input_text)
@@ -32,32 +24,25 @@ def do_stuff(input_text, number_of_sentences=-1):
         number_of_sentences = round(len(sentence_list)/3)+1
 
     print(sentence_value_dict)
-    # TODO: using a dictionary and sorting it changes the sentence order. This should not happen, or should it?
     svd_sorted = dict(sorted(sentence_value_dict.items(), key=lambda x: x[1]))
     return " ".join(x for x in list(svd_sorted)[0:number_of_sentences])
 
 
-def clean(input_text, clean_punctuation=False):
+def clean(input_text):
     """\"Cleans\" the text"""
-    if clean_punctuation:
-        input_text = input_text.replace('.', '')    # TODO
-    return input_text.replace('\n', ' ').replace('\r', '').replace('  ', ' ')
+    clean_text = input_text.replace('\n', ' ').replace('\r', '') # remove line breaks
+    clean_text = ' '.join(clean_text.split())                     # replace multiple spaces with one
+    return clean_text
 
 
 def sentencize(input_text):
     """Turns a text into a list of sentences"""
-    if use_nltk_tokenization:
-        return nltk.tokenize.sent_tokenize(input_text)
-    else:
-        return re.findall(r".+[.!?]+ ", input_text)  # TODO
+    return nltk.tokenize.sent_tokenize(input_text)
 
 
-def tokenize(input_text):                            # TODO: better tokenization
+def tokenize(input_text):                           # TODO: more tokenization, maybe
     """Turns a text into a list of tokens"""
-    if use_nltk_tokenization:
-        return nltk.tokenize.word_tokenize(input_text)
-    else:
-        return input_text.split()
+    return nltk.tokenize.word_tokenize(input_text)
 
 
 def remove_words(input_text, remove_list):

@@ -2,19 +2,20 @@
 
 """A UI for a program to summarize text, I guess."""
 
-import sys
 import os
+import sys
 import gi
 try:
     from summarizer.widgets import Window, MenuButton
-    import summarizer.text_summarize
+    from summarizer.text_summarize import do_stuff
 except ImportError:
     from widgets import Window, MenuButton
-    import text_summarize
+    from text_summarize import do_stuff
 
 gi.require_version("Gtk", "4.0")  # GTK 4 ftw
 gi.require_version("Adw", version="1")
 
+#pylint: disable=wrong-import-position
 from gi.repository import Gtk, Gio, Adw
 
 
@@ -49,7 +50,7 @@ APP_MENU = """
 
 
 class MyWindow(Window):
-
+    """Main Window Class"""
     def __init__(self, title, width, height, **kwargs):
         super().__init__(title, width, height, **kwargs)
         self.revealer = None
@@ -88,12 +89,12 @@ class MyWindow(Window):
         apply_btn.connect('clicked', self.on_summarize_btn)
         self.headerbar.pack_start(apply_btn)
 
-        main = self.setup_main_page()
-        self.set_child(main)
+        main_page = self.setup_main_page()
+        self.set_child(main_page)
 
     def setup_main_page(self):
         """Main Page"""
-        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        main_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         scrolledwindow = Gtk.ScrolledWindow()
         self.textview = Gtk.TextView.new()
         self.textview.set_left_margin(8)
@@ -105,7 +106,7 @@ class MyWindow(Window):
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textbuffer = self.textview.get_buffer()
         self.textbuffer.set_text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.' \
+            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' \
             'Donec tempus leo at interdum iaculis. ' \
             'Cras a dolor ut augue blandit varius. Aliquam ac fermentum turpis. ' \
             'Duis nisl ante, faucibus eget magna eget, interdum pretium orci. ' \
@@ -117,11 +118,11 @@ class MyWindow(Window):
             'velit nisl dictum mauris, et tristique ante justo eget mauris. '
         )
         scrolledwindow.set_child(self.textview)
-        main.append(scrolledwindow)
-        return main
+        main_page.append(scrolledwindow)
+        return main_page
 
     def show_shortcuts(self):
-        if(os.path.exists("data/resources/ui/shortcuts.ui")):
+        if os.path.exists("data/resources/ui/shortcuts.ui"):
             builder = Gtk.Builder.new_from_file("data/resources/ui/shortcuts.ui")
         else:
             builder = Gtk.Builder.new_from_resource("/de/haigruppe/summarizer/ui/shortcuts.ui")
@@ -147,6 +148,7 @@ class MyWindow(Window):
 
     # ---------------------- Handlers --------------------------
 
+    #pylint: disable=unused-argument
     def menu_handler(self, action, state):
         """ Callback for  menu actions"""
         name = action.get_name()
@@ -160,13 +162,14 @@ class MyWindow(Window):
         elif name == 'about':
             self.show_about()
 
+    #pylint: disable=unused-argument
     def on_load_btn(self, widget):
         """ callback for load buttom clicked """
         dialog = Gtk.FileChooserDialog()
-        f = Gtk.FileFilter()
-        f.set_name("Text files")
-        f.add_mime_type("text/plain")
-        dialog.add_filter(f)
+        file_filter = Gtk.FileFilter()
+        file_filter.set_name("Text files")
+        file_filter.add_mime_type("text/plain")
+        dialog.add_filter(file_filter)
         dialog.set_action(Gtk.FileChooserAction.OPEN)
         dialog.set_title("Load from File")
         dialog.add_button("_Select", Gtk.ResponseType.ACCEPT)
@@ -176,22 +179,21 @@ class MyWindow(Window):
         dialog.connect('response', self.on_save_response)
         dialog.present()
 
+    #pylint: disable=unused-argument
     def on_load_response(self, dialog, response):
         """ callback for load response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            input_text = self.textbuffer.get_text(self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
+            input_text = self.textbuffer.get_text(
+                self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
             with open(file.get_path(), "w") as file:
-                text_input = file.write(input_text)
+                file.write(input_text)
         dialog.destroy()
 
+    #pylint: disable=unused-argument
     def on_save_btn(self, widget):
         """ callback for save buttom clicked """
         dialog = Gtk.FileChooserDialog()
-        f = Gtk.FileFilter()
-        f.set_name("Text file")
-        f.add_mime_type("text/plain")
-        dialog.add_filter(f)
         dialog.set_action(Gtk.FileChooserAction.SAVE)
         dialog.set_title("Save to File")
         dialog.add_button("_Save", Gtk.ResponseType.ACCEPT)
@@ -201,6 +203,7 @@ class MyWindow(Window):
         dialog.connect('response', self.on_load_response)
         dialog.present()
 
+    #pylint: disable=unused-argument
     def on_save_response(self, dialog, response):
         """ callback for save response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
@@ -210,23 +213,26 @@ class MyWindow(Window):
                 self.textbuffer.set_text(text_input)
         dialog.destroy()
 
+    #pylint: disable=unused-argument
     def on_summarize_btn(self, widget):
         """ callback for summarize buttom clicked """
-        input_text = self.textbuffer.get_text(self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
-        self.textbuffer.set_text(text_summarize.do_stuff(input_text))
+        input_text = self.textbuffer.get_text(
+            self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
+        self.textbuffer.set_text(do_stuff(input_text))
 
 
 class Application(Adw.Application):
     """ Main Aplication class """
 
     def __init__(self):
-        super().__init__(application_id='de.haigruppe.summarizer', flags=Gio.ApplicationFlags.FLAGS_NONE)
+        super().__init__(application_id='de.haigruppe.summarizer',
+                         flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_startup(self):
         Adw.Application.do_startup(self)
         style_manager = Adw.StyleManager.get_default()
-        style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK  # Use dark appearance unless the system prefers prefers light colors.
-                                                                        # should probably be removed with Gnome 42 Runtime
+        # Use dark appearance (TODO: remove when Gnome 42 Runtime is out)
+        style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
 
     def do_activate(self):
         win = self.props.active_window

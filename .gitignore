@@ -1,5 +1,5 @@
-tmp/
 _build/
+tmp/
 
 # Flatpak
 .flatpak-builder/

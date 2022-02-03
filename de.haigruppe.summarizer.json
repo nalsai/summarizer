@@ -60,6 +60,37 @@
       ]
     },
     {
+      "name": "nltk",
+      "buildsystem": "simple",
+      "build-commands": [
+        "pip3 install --prefix=/app --no-deps ."
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/nltk/nltk",
+          "tag": "3.6.7",
+          "commit": "9f4de183a868a9e48801809f283a5dd770f0cb50"
+        }
+      ],
+      "modules": [
+        {
+          "name": "regex",
+          "buildsystem": "simple",
+          "build-commands": [
+            "pip3 install --prefix=/app --no-deps ."
+          ],
+          "sources": [
+            {
+              "type": "archive",
+              "url": "https://files.pythonhosted.org/packages/4c/75/b5b60055897d78882da8bc4c94609067cf531a42726df2e44ce69e8ec7a9/regex-2022.1.18.tar.gz",
+              "sha256": "97f32dc03a8054a4c4a5ab5d761ed4861e828b2c200febd4e46857069a483916"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "summarizer",
       "buildsystem": "meson",
       "sources": [
