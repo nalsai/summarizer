@@ -176,18 +176,31 @@ class MyWindow(Window):
         dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         dialog.set_transient_for(self)
         dialog.set_modal(self)
-        dialog.connect('response', self.on_save_response)
+        dialog.connect('response', self.on_load_response)
         dialog.present()
+
+        # FileChooserNative works with portals for flatpak
+        # filechooser = Gtk.FileChooserNative.new(
+        #     "_Open Text File",
+        #     self,
+        #     Gtk.FileChooserAction.OPEN,
+        #     "_Select",
+        #     "_Cancel")
+        # file_filter = Gtk.FileFilter()
+        # file_filter.set_name("Text files")
+        # file_filter.add_mime_type("text/plain")
+        # filechooser.add_filter(file_filter)
+        # filechooser.connect("response", self.on_load_response)
+        # Gtk.NativeDialog.show(filechooser);
 
     #pylint: disable=unused-argument
     def on_load_response(self, dialog, response):
         """ callback for load response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            input_text = self.textbuffer.get_text(
-                self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
-            with open(file.get_path(), "w") as file:
-                file.write(input_text)
+            with open(file.get_path(), "r") as file:
+                text_input = file.read()
+                self.textbuffer.set_text(text_input)
         dialog.destroy()
 
     #pylint: disable=unused-argument
@@ -200,7 +213,7 @@ class MyWindow(Window):
         dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         dialog.set_transient_for(self)
         dialog.set_modal(self)
-        dialog.connect('response', self.on_load_response)
+        dialog.connect('response', self.on_save_response)
         dialog.present()
 
     #pylint: disable=unused-argument
@@ -208,9 +221,10 @@ class MyWindow(Window):
         """ callback for save response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            with open(file.get_path(), "r") as file:
-                text_input = file.read()
-                self.textbuffer.set_text(text_input)
+            input_text = self.textbuffer.get_text(
+                self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
+            with open(file.get_path(), "w") as file:
+                file.write(input_text)
         dialog.destroy()
 
     #pylint: disable=unused-argument
@@ -235,6 +249,7 @@ class Application(Adw.Application):
         style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
 
     def do_activate(self):
+        #pylint: disable=no-member
         win = self.props.active_window
         if not win:
             win = MyWindow("🦈 Summarizer", 700, 500, application=self)
