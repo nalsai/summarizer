@@ -24,7 +24,13 @@ def parse_command_line():
 
     input_file = args.input
     output_file = args.output
-    sentences_number = int(args.number)
+    try:
+        sentences_number = int(args.number)
+    except TypeError:
+        sentences_number = -1
+    except ValueError:
+        print("Did you specify the number of sentences correctly? Using default value.")
+        sentences_number = -1
     return input_file, output_file, sentences_number
 
 
@@ -32,9 +38,6 @@ def main():
     """main"""
     try:
         input_f, output_f, sentences_n = parse_command_line()
-
-        text_input = ""
-
         if input_f == "-":
             text_input = sys.stdin.read()
         else:
@@ -52,8 +55,12 @@ def main():
     if text_input:
         summarized_text = do_stuff(text_input, sentences_n)
         if output_f:
-            with open(output_f, "w") as file:
-                file.write(summarized_text)
+            try:
+                with open(output_f, "w") as file:
+                    file.write(summarized_text)
+            except (IsADirectoryError, PermissionError, FileNotFoundError) as ex:
+                print(str.format("An error occured ({}).", type(ex).__name__))
+                print("Is your output path correct?")
         else:
             print(summarized_text)
 
