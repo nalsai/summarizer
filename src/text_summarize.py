@@ -23,7 +23,7 @@ def do_stuff(input_text, number_of_sentences=-1):
     if number_of_sentences < 1:
         number_of_sentences = round(len(sentence_list)/3)+1
 
-    print(sentence_value_dict)
+    #print(sentence_value_dict)
     svd_sorted = dict(sorted(sentence_value_dict.items(), key=lambda x: x[1]))
     return " ".join(x for x in list(svd_sorted)[0:number_of_sentences])
 
