@@ -1,20 +1,18 @@
-# prog1-ws21-summarizer6
+# 🦈 Summarizer
 
-Prog1 WS 2021/22: Automatic Text Summary
-
-https://gitlab.cl.uni-heidelberg.de/prog1-ws21/prog1-ws21-summarizer6/
+Prog1 WS 2021/22: Automatic Text Summary — prog1-ws21-summarizer6
 
 
 ## Usage Examples
 
 ```
-./src/main.py -h    # print help
+./src/main.py -h  # print help
 
-./src/main.py -i ./test/test-de.txt # summarize ./test/test-de.txt
+./src/main.py -i ./test/test-en.txt  # summarize ./test/test-en.txt
 
-./src/main.py -i ./test/test-en.txt -o ./tmp/out.txt -n 3 # summarize ./test/test-en.txt into 3 sentences and save it to ./tmp/out.txt 
+./src/main.py -i ./test/test-en.txt -o ./tmp/out.txt -n 3  # summarize to 3 sentences and save the summary
 
-echo -e "first line\nsecond line" | ./src/main.py -i - # summarize from piped command
+echo -e "first line.\nsecond line" | ./src/main.py -i -  # you can also summarize using pipes
 
 # Start UI:
 ./src/ui.py
@@ -30,14 +28,41 @@ libadwaita
 nltk  
 flatpak-builder or meson (for building)
 
-## Installing PyGObject
 
-https://pygobject.readthedocs.io/en/latest/getting_started.html
+# Running on Windows
+
+see [docs/windows.md](docs/windows.md)
 
 
-# Building Flatpak
+# Running on Linux
 
-You can build and run from GNOME Builder. Alternatively, use the following commands to build with flatpak-builder.
+You can install the Flatpak, which includes everything you need, like this:
+
+```
+flatpak install https://flatpak.nils.moe/de.haigruppe.summarizer.flatpakref
+```
+
+If you've never installed a Flatpak, follow the [setup guide](https://flatpak.org/setup/) first.
+
+
+# Building
+
+You can build and run from GNOME Builder.
+Alternatively, use the following commands to build with meson or with flatpak-builder.
+
+## meson
+
+Make sure you have all dependencies installed, then you can run the following:
+
+```
+meson configure build
+cd build
+meson compile
+meson install
+```
+
+## Flatpak
+
 
 ### Install SDK and Platform
 
