@@ -1,12 +1,12 @@
 # Running 🦈 Summarizer on Windows
 
 Currently, there is no native package for Windows.
-You can run 🦈 Summarizer using msys2 on Windows, like this:
+You can run 🦈 Summarizer using msys2 like this:
 
 Install msys2 using chocolatey, or  
-go to https://www.msys2.org/ and download the x86_64 installer and follow the instructions on the page for setting up the basic environment.
+go to [https://www.msys2.org/](https://www.msys2.org/), download the x86_64 installer and follow the instructions on the page for setting up the basic environment.
 
-Run `C:\msys64\mingw64.exe` (`C:\tools\msys64\mingw64.exe` for chocolatey) - a terminal window should pop up
+Run `C:\msys64\mingw64.exe` (`C:\tools\msys64\mingw64.exe` for chocolatey) - a terminal window should pop up.
 
 Execute the following commands to install all dependencies:
 
