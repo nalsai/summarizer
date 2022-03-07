@@ -3,4 +3,4 @@ Type=Application
 Name=🦈 Summarizer
 Icon=de.haigruppe.summarizer
 Exec=summarizer
-Categories=Text;
+Categories=Utility;TextTools

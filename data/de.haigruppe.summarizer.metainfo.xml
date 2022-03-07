@@ -8,6 +8,10 @@
     <description>
         <p>(it's bad)</p>
     </description>
+	<categories>
+		<category>Utility</category>
+		<category>TextTools</category>
+	</categories>
     <url type="bugtracker">https://gitlab.cl.uni-heidelberg.de/prog1-ws21/prog1-ws21-summarizer6/-/issues</url>
     <developer_name>Haigruppe</developer_name>
     <content_rating type="oars-1.1" />
