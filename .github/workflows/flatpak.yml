@@ -2,11 +2,11 @@ on:
   push:
     branches: [main]
   pull_request:
-name: CI
+name: 📦 Build
 jobs:
   flatpak:
     name: "Flatpak"
-    runs-on: fedora-latest
+    runs-on: ubuntu-latest
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-42
       options: --privileged
