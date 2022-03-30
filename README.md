@@ -13,8 +13,7 @@ Prog1 WS 2021/22: Automatic Text Summary — prog1-ws21-summarizer6
 
 echo -e "first line.\nsecond line" | ./src/main.py -i -  # you can also summarize using pipes
 
-# Start UI
-./src/ui.py
+./src/ui.py  # Start UI
 ```
 
 ## Dependencies
@@ -24,7 +23,8 @@ Gtk4
 PyGObject  
 libadwaita  
 nltk  
-(flatpak-builder or meson for building)
+flatpak-builder or meson (for building)
+cx_Freeze (for building win32)
 
 ## Running on Windows
 

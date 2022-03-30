@@ -12,7 +12,7 @@ except ImportError:
     from widgets import Window, MenuButton
     from text_summarize import do_stuff
 
-gi.require_version("Gtk", "4.0")  # GTK 4 ftw
+gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", version="1")
 
 #pylint: disable=wrong-import-position
@@ -245,7 +245,6 @@ class Application(Adw.Application):
     def do_startup(self):
         Adw.Application.do_startup(self)
         style_manager = Adw.StyleManager.get_default()
-        # Use dark appearance (TODO: remove when Gnome 42 Runtime is out)
         style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
 
     def do_activate(self):

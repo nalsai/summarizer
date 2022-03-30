@@ -1,19 +1,23 @@
+name: 📦 Build Flatpak
+
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-name: 📦 Build
+
 jobs:
   flatpak:
-    name: "Flatpak"
+    name: build-flatpak
     runs-on: ubuntu-latest
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-42
       options: --privileged
     steps:
-    - uses: actions/checkout@v2
-    - uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
-      with:
-        bundle:  summarizer.flatpak
-        manifest-path: de.haigruppe.summarizer.json
-        cache-key: flatpak-builder-${{ github.sha }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Build Flatpak
+        uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
+        with:
+          bundle:  summarizer.flatpak
+          manifest-path: de.haigruppe.summarizer.json
+          cache-key: flatpak-builder-${{ github.sha }}
