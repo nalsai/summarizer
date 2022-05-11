@@ -245,7 +245,7 @@ class Application(Adw.Application):
     def do_startup(self):
         Adw.Application.do_startup(self)
         style_manager = Adw.StyleManager.get_default()
-        style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
+        #style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
 
     def do_activate(self):
         #pylint: disable=no-member
