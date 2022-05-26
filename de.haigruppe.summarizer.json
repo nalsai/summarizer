@@ -4,7 +4,7 @@
   "runtime-version": "42",
   "sdk": "org.gnome.Sdk",
   "command": "summarizer",
-  "branch": "stable",
+  "default-branch": "stable",
   "finish-args": [
     "--share=ipc",
     "--socket=fallback-x11",
