@@ -63,7 +63,7 @@ flatpak-builder --install-deps-from=flathub --force-clean build-dir de.haigruppe
 flatpak-builder --user --install --force-clean build-dir de.haigruppe.summarizer.json
 ```
 
-## Ressources
+## Resources
 
 - Gtk4 Docs: <https://docs.gtk.org/gtk4/>
 - libadwaita Docs: <https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1-latest/>
