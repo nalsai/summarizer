@@ -140,7 +140,7 @@ class MyWindow(Window):
         about.set_version("0.1.0")
         about.set_comments("A program to summarize text, I guess.")
         about.set_website(
-            "https://gitlab.cl.uni-heidelberg.de/prog1-ws21/prog1-ws21-summarizer6/")
+            "git.nalsai.de/summarizer/")
         about.set_license_type(Gtk.License.GPL_3_0)
         about.set_authors(["Nils Fürniß https://git.nalsai.de/",
                           "Spyridon Link https://github.com/Astrothewhiteshadow/"])
