@@ -31,6 +31,8 @@ APP_MENU = """
       <attribute name='label' translatable='yes'>_Clear Text</attribute>
       <attribute name='action'>win.clear</attribute>
     </item>
+  </section>
+  <section>
     <item>
       <attribute name='label' translatable='yes'>_Preferences</attribute>
       <attribute name='action'>win.preferences</attribute>
@@ -62,7 +64,7 @@ class MyWindow(Window):
 
         save_btn = Gtk.Button()
         save_btn.set_label("Save to File")
-        save_btn.set_tooltip_text("Save to File")
+        save_btn.set_tooltip_text("Save to File (Ctrl+S)")
         save_btn.set_has_frame(False)
         save_btn.set_icon_name("document-save-symbolic")
         save_btn.connect('clicked', self.on_save_btn)
@@ -70,20 +72,24 @@ class MyWindow(Window):
 
         load_btn = Gtk.Button()
         load_btn.set_label("Load from File")
-        load_btn.set_tooltip_text("Load from File")
+        load_btn.set_tooltip_text("Load from File (Ctrl+O)")
         load_btn.set_has_frame(False)
         load_btn.set_icon_name("document-open-symbolic")
         load_btn.connect('clicked', self.on_load_btn)
         self.headerbar.pack_end(load_btn)
 
-        # Create actions to handle menu actions
+        # Create actions
         self.create_action('clear', self.menu_handler)
         self.create_action('preferences', self.menu_handler)
         self.create_action('shortcuts', self.menu_handler)
         self.create_action('about', self.menu_handler)
+        self.create_action('save', self.menu_handler)
+        self.create_action('load', self.menu_handler)
+        self.create_action('summarize', self.menu_handler)
 
         apply_btn = Gtk.Button()
         apply_btn.set_label("Summarize")
+        apply_btn.set_tooltip_text("Summarize (Ctrl+Enter)")
         apply_btn.set_halign(Gtk.Align.END)
         apply_btn.set_css_classes(["suggested-action"])
         apply_btn.connect('clicked', self.on_summarize_btn)
@@ -161,9 +167,15 @@ class MyWindow(Window):
             self.show_preferences()
         elif name == 'about':
             self.show_about()
+        elif name == 'save':
+            self.on_save_btn()
+        elif name == 'load':
+            self.on_load_btn()
+        elif name == 'summarize':
+            self.on_summarize_btn()
 
     #pylint: disable=unused-argument
-    def on_load_btn(self, widget):
+    def on_load_btn(self, widget=None):
         """ callback for load buttom clicked """
         dialog = Gtk.FileChooserDialog()
         file_filter = Gtk.FileFilter()
@@ -171,7 +183,7 @@ class MyWindow(Window):
         file_filter.add_mime_type("text/plain")
         dialog.add_filter(file_filter)
         dialog.set_action(Gtk.FileChooserAction.OPEN)
-        dialog.set_title("Load from File")
+        dialog.set_title("Load from file")
         dialog.add_button("_Select", Gtk.ResponseType.ACCEPT)
         dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         dialog.set_transient_for(self)
@@ -204,11 +216,11 @@ class MyWindow(Window):
         dialog.destroy()
 
     #pylint: disable=unused-argument
-    def on_save_btn(self, widget):
+    def on_save_btn(self, widget=None):
         """ callback for save buttom clicked """
         dialog = Gtk.FileChooserDialog()
         dialog.set_action(Gtk.FileChooserAction.SAVE)
-        dialog.set_title("Save to File")
+        dialog.set_title("Save to file")
         dialog.add_button("_Save", Gtk.ResponseType.ACCEPT)
         dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
         dialog.set_transient_for(self)
@@ -228,7 +240,7 @@ class MyWindow(Window):
         dialog.destroy()
 
     #pylint: disable=unused-argument
-    def on_summarize_btn(self, widget):
+    def on_summarize_btn(self, widget=None):
         """ callback for summarize buttom clicked """
         input_text = self.textbuffer.get_text(
             self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
@@ -244,8 +256,18 @@ class Application(Adw.Application):
 
     def do_startup(self):
         Adw.Application.do_startup(self)
-        style_manager = Adw.StyleManager.get_default()
+        #style_manager = Adw.StyleManager.get_default()
         #style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
+        self.set_accels_for_action("win.clear", ["<Ctrl>c"]) # TODO change key
+        self.set_accels_for_action("win.shortcuts", ["<Ctrl>question"])
+        self.set_accels_for_action("win.preferences", ["<Ctrl>comma"])
+
+        self.set_accels_for_action("win.save", ["<Ctrl>s"])
+        self.set_accels_for_action("win.load", ["<Ctrl>o"])
+
+        self.set_accels_for_action("win.summarize", ["<Ctrl>Return"])
+
+        self.set_accels_for_action("window.close", ["<Ctrl>q", "<Ctrl>w"])
 
     def do_activate(self):
         #pylint: disable=no-member
@@ -256,7 +278,7 @@ class Application(Adw.Application):
 
 
 def main():
-    """ Run the main application"""
+    """ Run the main application """
     app = Application()
     return app.run(sys.argv)
 
