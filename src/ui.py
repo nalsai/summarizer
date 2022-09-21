@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
-"""A UI for a program to summarize text, I guess."""
+"""
+A UI for a program to summarize text, I guess.
+"""
 
 import os
 import sys
 import gi
 try:
-    from summarizer.widgets import Window, MenuButton
     from summarizer.text_summarize import do_stuff
 except ImportError:
-    from widgets import Window, MenuButton
     from text_summarize import do_stuff
 
 gi.require_version("Gtk", "4.0")
@@ -51,16 +51,37 @@ APP_MENU = """
 """
 
 
+class Window(Gtk.ApplicationWindow):
+    """ Custom Gtk.ApplicationWindow with a headerbar"""
+    def __init__(self, title, width, height, **kwargs):
+        super().__init__(**kwargs)
+        self.set_default_size(width, height)
+        self.headerbar = Gtk.HeaderBar()
+        self.set_titlebar(self.headerbar)
+        label = Gtk.Label()
+        label.set_text(title)
+        self.headerbar.set_title_widget(label)
+
+    def create_action(self, name, callback):
+        """ Add an action and connect to a callback """
+        action = Gio.SimpleAction.new(name, None)
+        action.connect("activate", callback)
+        self.add_action(action)
+
+
 class MyWindow(Window):
-    """Main Window Class"""
+    """ Main Window Class """
     def __init__(self, title, width, height, **kwargs):
         super().__init__(title, width, height, **kwargs)
         self.revealer = None
 
-        menu = MenuButton(APP_MENU, 'app-menu')
-        menu.set_tooltip_text("Main Menu")
-        menu.set_has_frame(False)
-        self.headerbar.pack_end(menu)
+        menu_btn = Gtk.MenuButton()
+        builder = Gtk.Builder()
+        builder.add_from_string(APP_MENU)
+        menu = builder.get_object("app-menu")
+        menu_btn.set_menu_model(menu)
+        menu_btn.set_icon_name("open-menu-symbolic")
+        self.headerbar.pack_end(menu_btn)
 
         save_btn = Gtk.Button()
         save_btn.set_label("Save to File")
@@ -79,13 +100,13 @@ class MyWindow(Window):
         self.headerbar.pack_end(load_btn)
 
         # Create actions
-        self.create_action('clear', self.menu_handler)
-        self.create_action('preferences', self.menu_handler)
-        self.create_action('shortcuts', self.menu_handler)
-        self.create_action('about', self.menu_handler)
-        self.create_action('save', self.menu_handler)
-        self.create_action('load', self.menu_handler)
-        self.create_action('summarize', self.menu_handler)
+        self.create_action('clear', self.action_handler)
+        self.create_action('preferences', self.action_handler)
+        self.create_action('shortcuts', self.action_handler)
+        self.create_action('about', self.action_handler)
+        self.create_action('save', self.action_handler)
+        self.create_action('load', self.action_handler)
+        self.create_action('summarize', self.action_handler)
 
         apply_btn = Gtk.Button()
         apply_btn.set_label("Summarize")
@@ -99,7 +120,7 @@ class MyWindow(Window):
         self.set_child(main_page)
 
     def setup_main_page(self):
-        """Main Page"""
+        """ Main Page"""
         main_page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         scrolledwindow = Gtk.ScrolledWindow()
         self.textview = Gtk.TextView.new()
@@ -127,38 +148,10 @@ class MyWindow(Window):
         main_page.append(scrolledwindow)
         return main_page
 
-    def show_shortcuts(self):
-        if os.path.exists("data/resources/ui/shortcuts.ui"):
-            builder = Gtk.Builder.new_from_file("data/resources/ui/shortcuts.ui")
-        else:
-            builder = Gtk.Builder.new_from_resource("/de/haigruppe/summarizer/ui/shortcuts.ui")
-        shortcuts = builder.get_object("shortcuts")
-        shortcuts.present()
-
-    def show_preferences(self):
-        # TODO
-        print("まだ")
-
-    def show_about(self):
-        about = Gtk.AboutDialog()
-        about.set_logo_icon_name("media-view-subtitles-symbolic")
-        about.set_program_name("🦈 Summarizer")
-        about.set_version("0.1.0")
-        about.set_comments("A program to summarize text, I guess.")
-        about.set_website(
-            "git.nalsai.de/summarizer/")
-        about.set_license_type(Gtk.License.GPL_3_0)
-        about.set_authors(["Nils Fürniß https://git.nalsai.de/",
-                          "Spyridon Link https://github.com/Astrothewhiteshadow/"])
-        about.present()
-
-    # ---------------------- Handlers --------------------------
-
     #pylint: disable=unused-argument
-    def menu_handler(self, action, state):
-        """ Callback for  menu actions"""
+    def action_handler(self, action, state):
+        """ Callback for actions"""
         name = action.get_name()
-        #print(f'active : {name}')
         if name == 'shortcuts':
             self.show_shortcuts()
         elif name == 'clear':
@@ -174,9 +167,37 @@ class MyWindow(Window):
         elif name == 'summarize':
             self.on_summarize_btn()
 
+    def show_shortcuts(self):
+        """" Callback for opening shortcuts ui """
+        if os.path.exists("data/resources/ui/shortcuts.ui"):
+            builder = Gtk.Builder.new_from_file("data/resources/ui/shortcuts.ui")
+        else:
+            builder = Gtk.Builder.new_from_resource("/de/haigruppe/summarizer/ui/shortcuts.ui")
+        shortcuts = builder.get_object("shortcuts")
+        shortcuts.present()
+
+    def show_preferences(self):
+        """" Callback for opening preferences ui """
+        # TODO
+        print("まだ")
+
+    def show_about(self):
+        """" Callback for opening about ui """
+        about = Gtk.AboutDialog()
+        about.set_logo_icon_name("media-view-subtitles-symbolic")
+        about.set_program_name("🦈 Summarizer")
+        about.set_version("0.1.0")
+        about.set_comments("A program to summarize text, I guess.")
+        about.set_website(
+            "git.nalsai.de/summarizer/")
+        about.set_license_type(Gtk.License.GPL_3_0)
+        about.set_authors(["Nils Fürniß https://git.nalsai.de/",
+                          "Spyridon Link https://github.com/Astrothewhiteshadow/"])
+        about.present()
+
     #pylint: disable=unused-argument
     def on_load_btn(self, widget=None):
-        """ callback for load buttom clicked """
+        """ Callback for load buttom clicked """
         dialog = Gtk.FileChooserDialog()
         file_filter = Gtk.FileFilter()
         file_filter.set_name("Text files")
@@ -207,7 +228,7 @@ class MyWindow(Window):
 
     #pylint: disable=unused-argument
     def on_load_response(self, dialog, response):
-        """ callback for load response from FileChooserDialog """
+        """ Callback for load response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
             with open(file.get_path(), "r", encoding="utf8") as file:
@@ -217,7 +238,7 @@ class MyWindow(Window):
 
     #pylint: disable=unused-argument
     def on_save_btn(self, widget=None):
-        """ callback for save buttom clicked """
+        """ Callback for save buttom clicked """
         dialog = Gtk.FileChooserDialog()
         dialog.set_action(Gtk.FileChooserAction.SAVE)
         dialog.set_title("Save to file")
@@ -230,7 +251,7 @@ class MyWindow(Window):
 
     #pylint: disable=unused-argument
     def on_save_response(self, dialog, response):
-        """ callback for save response from FileChooserDialog """
+        """ Callback for save response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
             input_text = self.textbuffer.get_text(
@@ -241,7 +262,7 @@ class MyWindow(Window):
 
     #pylint: disable=unused-argument
     def on_summarize_btn(self, widget=None):
-        """ callback for summarize buttom clicked """
+        """ Callback for summarize buttom clicked """
         input_text = self.textbuffer.get_text(
             self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
         self.textbuffer.set_text(do_stuff(input_text))
@@ -256,17 +277,18 @@ class Application(Adw.Application):
 
     def do_startup(self):
         Adw.Application.do_startup(self)
-        #style_manager = Adw.StyleManager.get_default()
-        #style_manager.props.color_scheme = Adw.ColorScheme.PREFER_DARK
-        self.set_accels_for_action("win.clear", ["<Ctrl>c"]) # TODO change key
+
+        style_manager = Adw.StyleManager.get_default()
+        # if the system doesn't support libadwaita color schemes, fall back to dark
+        if not style_manager.props.system_supports_color_schemes:
+            style_manager.props.color_scheme = Adw.ColorScheme.FORCE_DARK
+
+        self.set_accels_for_action("win.clear", ["<Ctrl>c"])
         self.set_accels_for_action("win.shortcuts", ["<Ctrl>question"])
         self.set_accels_for_action("win.preferences", ["<Ctrl>comma"])
-
         self.set_accels_for_action("win.save", ["<Ctrl>s"])
         self.set_accels_for_action("win.load", ["<Ctrl>o"])
-
         self.set_accels_for_action("win.summarize", ["<Ctrl>Return"])
-
         self.set_accels_for_action("window.close", ["<Ctrl>q", "<Ctrl>w"])
 
     def do_activate(self):

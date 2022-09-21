@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
-"""A program to summarize text, I guess."""
+"""
+A program to summarize text, I guess.
+"""
 
 import argparse
 import sys
@@ -41,7 +43,7 @@ def main():
         if input_f == "-":
             text_input = sys.stdin.read()
         else:
-            with open(input_f, "r") as file:
+            with open(input_f, "r", encoding="utf8") as file:
                 text_input = file.read()
 
     except FileNotFoundError:
@@ -56,7 +58,7 @@ def main():
         summarized_text = do_stuff(text_input, sentences_n)
         if output_f:
             try:
-                with open(output_f, "w") as file:
+                with open(output_f, "w", encoding="utf8") as file:
                     file.write(summarized_text)
             except (IsADirectoryError, PermissionError, FileNotFoundError) as ex:
                 print(str.format("An error occured ({}).", type(ex).__name__))

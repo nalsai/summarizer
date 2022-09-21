@@ -1,12 +1,13 @@
-"""summarizes a text, maybe"""
+"""
+Summarizes a text, maybe
+"""
 
 import nltk
 
 def do_stuff(input_text, number_of_sentences=-1):
-    """Does stuff, but not good yet"""
-    # TODO: use a class
+    """ Does stuff, but not good yet """
 
-    remove_list = ["a", ".", ","]     # TODO: file with more data
+    remove_list = ["a", ".", ","]
     cleaned_text = clean(input_text)
     freq_dist = nltk.FreqDist(
         tokenize(remove_words(cleaned_text, remove_list)))
@@ -29,24 +30,24 @@ def do_stuff(input_text, number_of_sentences=-1):
 
 
 def clean(input_text):
-    """\"Cleans\" the text"""
+    """ \"Cleans\" the text """
     clean_text = input_text.replace('\n', ' ').replace('\r', '') # remove line breaks
     clean_text = ' '.join(clean_text.split())                     # replace multiple spaces with one
     return clean_text
 
 
 def sentencize(input_text):
-    """Turns a text into a list of sentences"""
+    """ Turns a text into a list of sentences """
     return nltk.tokenize.sent_tokenize(input_text)
 
 
-def tokenize(input_text):                           # TODO: more tokenization, maybe
-    """Turns a text into a list of tokens"""
+def tokenize(input_text):
+    """ Turns a text into a list of tokens """
     return nltk.tokenize.word_tokenize(input_text)
 
 
 def remove_words(input_text, remove_list):
-    """Removes all words in remove_list from input text."""
+    """ Removes all words in remove_list from input text """
     word_list = input_text.split()
     cleaned_list = [word for word in word_list if word not in remove_list]
     return ' '.join(cleaned_list)
