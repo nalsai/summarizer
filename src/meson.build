@@ -23,7 +23,6 @@ sources = [
     'main.py',
     'text_summarize.py',
     'ui.py',
-    'widgets.py'
 ]
 
 install_data(sources, install_dir: moduledir)
