@@ -210,7 +210,7 @@ class MyWindow(Window):
         """ callback for load response from FileChooserDialog """
         if response == Gtk.ResponseType.ACCEPT:
             file = dialog.get_file()
-            with open(file.get_path(), "r") as file:
+            with open(file.get_path(), "r", encoding="utf8") as file:
                 text_input = file.read()
                 self.textbuffer.set_text(text_input)
         dialog.destroy()
@@ -235,7 +235,7 @@ class MyWindow(Window):
             file = dialog.get_file()
             input_text = self.textbuffer.get_text(
                 self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
-            with open(file.get_path(), "w") as file:
+            with open(file.get_path(), "w", encoding="utf8") as file:
                 file.write(input_text)
         dialog.destroy()
 
