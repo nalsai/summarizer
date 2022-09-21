@@ -88,7 +88,7 @@ class MyWindow(Window):
         save_btn.set_tooltip_text("Save to File (Ctrl+S)")
         save_btn.set_has_frame(False)
         save_btn.set_icon_name("document-save-symbolic")
-        save_btn.connect('clicked', self.on_save_btn)
+        save_btn.connect('clicked', self.save_file)
         self.headerbar.pack_end(save_btn)
 
         load_btn = Gtk.Button()
@@ -96,7 +96,7 @@ class MyWindow(Window):
         load_btn.set_tooltip_text("Load from File (Ctrl+O)")
         load_btn.set_has_frame(False)
         load_btn.set_icon_name("document-open-symbolic")
-        load_btn.connect('clicked', self.on_load_btn)
+        load_btn.connect('clicked', self.open_file)
         self.headerbar.pack_end(load_btn)
 
         # Create actions
@@ -149,7 +149,7 @@ class MyWindow(Window):
         return main_page
 
     #pylint: disable=unused-argument
-    def action_handler(self, action, state):
+    def action_handler(self, action, _state):
         """ Callback for actions"""
         name = action.get_name()
         if name == 'shortcuts':
@@ -161,9 +161,9 @@ class MyWindow(Window):
         elif name == 'about':
             self.show_about()
         elif name == 'save':
-            self.on_save_btn()
+            self.save_file()
         elif name == 'load':
-            self.on_load_btn()
+            self.open_file()
         elif name == 'summarize':
             self.on_summarize_btn()
 
@@ -195,72 +195,53 @@ class MyWindow(Window):
                           "Spyridon Link https://github.com/Astrothewhiteshadow/"])
         about.present()
 
-    #pylint: disable=unused-argument
-    def on_load_btn(self, widget=None):
-        """ Callback for load buttom clicked """
-        dialog = Gtk.FileChooserDialog()
+    def open_file(self, _widget=None):
+        """" FileChooserNative for opening a file """
+        def on_response(_filechooser, response):
+            if response == Gtk.ResponseType.ACCEPT:
+                gfile = self.filechooser.get_file()
+                with open(gfile.get_path(), "r", encoding="utf8") as file:
+                    text_input = file.read()
+                    self.textbuffer.set_text(text_input)
+
+        #pylint: disable=attribute-defined-outside-init
+        self.filechooser = Gtk.FileChooserNative.new(
+            "_Open Text File",
+            self,
+            Gtk.FileChooserAction.OPEN,
+            "_Select",
+            "_Cancel")
+        self.filechooser.connect('response', on_response)
         file_filter = Gtk.FileFilter()
         file_filter.set_name("Text files")
         file_filter.add_mime_type("text/plain")
-        dialog.add_filter(file_filter)
-        dialog.set_action(Gtk.FileChooserAction.OPEN)
-        dialog.set_title("Load from file")
-        dialog.add_button("_Select", Gtk.ResponseType.ACCEPT)
-        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
-        dialog.set_transient_for(self)
-        dialog.set_modal(self)
-        dialog.connect('response', self.on_load_response)
-        dialog.present()
+        self.filechooser.add_filter(file_filter)
+        self.filechooser.set_transient_for(self)
+        self.filechooser.set_modal(self)
+        self.filechooser.show()
 
-        # FileChooserNative works with portals for flatpak
-        # filechooser = Gtk.FileChooserNative.new(
-        #     "_Open Text File",
-        #     self,
-        #     Gtk.FileChooserAction.OPEN,
-        #     "_Select",
-        #     "_Cancel")
-        # file_filter = Gtk.FileFilter()
-        # file_filter.set_name("Text files")
-        # file_filter.add_mime_type("text/plain")
-        # filechooser.add_filter(file_filter)
-        # filechooser.connect("response", self.on_load_response)
-        # Gtk.NativeDialog.show(filechooser);
+    def save_file(self, _widget=None):
+        """" FileChooserNative for saving a file """
+        def on_response(_filechooser, response):
+            if response == Gtk.ResponseType.ACCEPT:
+                file = self.filechooser.get_file()
+                input_text = self.textbuffer.get_text(
+                    self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
+                with open(file.get_path(), "w", encoding="utf8") as file:
+                    file.write(input_text)
 
-    #pylint: disable=unused-argument
-    def on_load_response(self, dialog, response):
-        """ Callback for load response from FileChooserDialog """
-        if response == Gtk.ResponseType.ACCEPT:
-            file = dialog.get_file()
-            with open(file.get_path(), "r", encoding="utf8") as file:
-                text_input = file.read()
-                self.textbuffer.set_text(text_input)
-        dialog.destroy()
+        #pylint: disable=attribute-defined-outside-init
+        self.filechooser = Gtk.FileChooserNative.new(
+            "_Save Text File",
+            self,
+            Gtk.FileChooserAction.SAVE,
+            "_Save",
+            "_Cancel")
+        self.filechooser.connect('response', on_response)
+        self.filechooser.set_transient_for(self)
+        self.filechooser.set_modal(self)
+        self.filechooser.show()
 
-    #pylint: disable=unused-argument
-    def on_save_btn(self, widget=None):
-        """ Callback for save buttom clicked """
-        dialog = Gtk.FileChooserDialog()
-        dialog.set_action(Gtk.FileChooserAction.SAVE)
-        dialog.set_title("Save to file")
-        dialog.add_button("_Save", Gtk.ResponseType.ACCEPT)
-        dialog.add_button("_Cancel", Gtk.ResponseType.CANCEL)
-        dialog.set_transient_for(self)
-        dialog.set_modal(self)
-        dialog.connect('response', self.on_save_response)
-        dialog.present()
-
-    #pylint: disable=unused-argument
-    def on_save_response(self, dialog, response):
-        """ Callback for save response from FileChooserDialog """
-        if response == Gtk.ResponseType.ACCEPT:
-            file = dialog.get_file()
-            input_text = self.textbuffer.get_text(
-                self.textbuffer.get_start_iter(), self.textbuffer.get_end_iter(), False)
-            with open(file.get_path(), "w", encoding="utf8") as file:
-                file.write(input_text)
-        dialog.destroy()
-
-    #pylint: disable=unused-argument
     def on_summarize_btn(self, widget=None):
         """ Callback for summarize buttom clicked """
         input_text = self.textbuffer.get_text(
