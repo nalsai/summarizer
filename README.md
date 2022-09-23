@@ -35,7 +35,7 @@ see [docs/windows.md](docs/windows.md)
 You can install the Flatpak, which includes everything you need, like this:
 
 ```bash
-flatpak install https://flatpak.nils.moe/de.haigruppe.summarizer.flatpakref
+flatpak install https://flatpak.nils.moe/repo/appstream/de.haigruppe.summarizer.flatpakref
 ```
 
 If you've never installed a Flatpak, follow the [setup guide](https://flatpak.org/setup/) first.
