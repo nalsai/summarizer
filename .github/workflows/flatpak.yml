@@ -36,9 +36,11 @@ jobs:
           manifest-path: de.haigruppe.summarizer.json
           cache-key: flatpak-builder-${{ github.sha }}
           arch: ${{ matrix.arch }}
+          branch: stable
       - name: Deploy
         uses: bilelmoussaoui/flatpak-github-actions/flat-manager@v3
         with:
           repository: ""
           flat-manager-url: https://flatpak.hachiman.nils.moe
           token: ${{ secrets.FLATMAN_TOKEN }}
+
