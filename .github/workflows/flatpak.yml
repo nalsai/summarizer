@@ -12,12 +12,27 @@ jobs:
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-43
       options: --privileged
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+      # Don't fail the whole workflow if one architecture fails
+      fail-fast: false
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+      # Docker is required by the docker/setup-qemu-action which enables emulation
+      - name: Install deps
+        run: |
+          dnf -y install docker
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: arm64
       - name: Build Flatpak
         uses: bilelmoussaoui/flatpak-github-actions/flatpak-builder@v4
         with:
-          bundle:  summarizer.flatpak
+          bundle:  de.haigruppe.summarizer.flatpak
           manifest-path: de.haigruppe.summarizer.json
           cache-key: flatpak-builder-${{ github.sha }}
+          arch: ${{ matrix.arch }}
