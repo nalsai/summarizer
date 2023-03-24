@@ -1,73 +1,73 @@
 {
-  "app-id": "de.haigruppe.summarizer",
-  "runtime": "org.gnome.Platform",
-  "runtime-version": "44",
-  "sdk": "org.gnome.Sdk",
-  "command": "summarizer",
-  "default-branch": "stable",
-  "finish-args": [
-    "--share=ipc",
-    "--socket=fallback-x11",
-    "--socket=wayland",
-    "--device=dri"
-  ],
-  "cleanup": [
-    "/include",
-    "/lib/*.a",
-    "/lib/*.la",
-    "/lib/pkgconfig",
-    "/share/man",
-    "/share/doc"
-  ],
-  "modules": [
-    {
-      "name": "nltk",
-      "buildsystem": "simple",
-      "build-commands": [
-        "pip3 install --prefix=/app --no-deps ."
-      ],
-      "sources": [
+    "app-id": "de.haigruppe.summarizer",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "44",
+    "sdk": "org.gnome.Sdk",
+    "command": "summarizer",
+    "default-branch": "stable",
+    "finish-args": [
+        "--share=ipc",
+        "--socket=fallback-x11",
+        "--socket=wayland",
+        "--device=dri"
+    ],
+    "cleanup": [
+        "/include",
+        "/lib/*.a",
+        "/lib/*.la",
+        "/lib/pkgconfig",
+        "/share/man",
+        "/share/doc"
+    ],
+    "modules": [
         {
-          "type": "git",
-          "url": "https://github.com/nltk/nltk",
-          "tag": "3.8",
-          "commit": "78952ef2d49e5281e30418c6f7778409e36d1765",
-          "x-checker-data": {
-            "type": "git",
-            "tag-pattern": "^([\\d.]+)$"
-          }
-        }
-      ],
-      "modules": [
+            "name": "nltk",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --prefix=/app --no-deps ."
+            ],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/nltk/nltk",
+                    "tag": "3.8",
+                    "commit": "78952ef2d49e5281e30418c6f7778409e36d1765",
+                    "x-checker-data": {
+                        "type": "git",
+                        "tag-pattern": "^([\\d.]+)$"
+                    }
+                }
+            ],
+            "modules": [
+                {
+                    "name": "regex",
+                    "buildsystem": "simple",
+                    "build-commands": [
+                        "pip3 install --prefix=/app --no-deps ."
+                    ],
+                    "sources": [
+                        {
+                            "type": "archive",
+                            "url": "https://files.pythonhosted.org/packages/d8/29/bd8de07107bc952e0e2783243024e1c125e787fd685725a622e4ac7aeb3c/regex-2023.3.23.tar.gz",
+                            "sha256": "dc80df325b43ffea5cdea2e3eaa97a44f3dd298262b1c7fe9dbb2a9522b956a7",
+                            "x-checker-data": {
+                                "type": "pypi",
+                                "name": "regex"
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
         {
-          "name": "regex",
-          "buildsystem": "simple",
-          "build-commands": [
-            "pip3 install --prefix=/app --no-deps ."
-          ],
-          "sources": [
-            {
-              "type": "archive",
-              "url": "https://files.pythonhosted.org/packages/30/a2/54bfa43f075692a6158651537958d72ee679328dbe0666de129830db7ea7/regex-2023.3.22.tar.gz",
-              "sha256": "f579a202b90c1110d0894a86b32a89bf550fdb34bdd3f9f550115706be462e19",
-              "x-checker-data": {
-                "type": "pypi",
-                "name": "regex"
-              }
-            }
-          ]
+            "name": "summarizer",
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "."
+                }
+            ]
         }
-      ]
-    },
-    {
-      "name": "summarizer",
-      "buildsystem": "meson",
-      "sources": [
-        {
-          "type": "dir",
-          "path": "."
-        }
-      ]
-    }
-  ]
+    ]
 }
