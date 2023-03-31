@@ -30,8 +30,8 @@
                 {
                     "type": "git",
                     "url": "https://github.com/nltk/nltk",
-                    "tag": "3.8",
-                    "commit": "78952ef2d49e5281e30418c6f7778409e36d1765",
+                    "tag": "3.8.1",
+                    "commit": "63a63b1a7793aceceb1efc23bc1fd87e7095f9d5",
                     "x-checker-data": {
                         "type": "git",
                         "tag-pattern": "^([\\d.]+)$"
