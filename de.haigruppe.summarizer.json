@@ -49,11 +49,7 @@
                         {
                             "type": "archive",
                             "url": "https://files.pythonhosted.org/packages/d8/29/bd8de07107bc952e0e2783243024e1c125e787fd685725a622e4ac7aeb3c/regex-2023.3.23.tar.gz",
-                            "sha256": "dc80df325b43ffea5cdea2e3eaa97a44f3dd298262b1c7fe9dbb2a9522b956a7",
-                            "x-checker-data": {
-                                "type": "pypi",
-                                "name": "regex"
-                            }
+                            "sha256": "dc80df325b43ffea5cdea2e3eaa97a44f3dd298262b1c7fe9dbb2a9522b956a7"
                         }
                     ]
                 }
